@@ -1,25 +1,31 @@
 from abc import ABC, abstractmethod
+from proto import auth_pb2
+
 
 from app.core.db.models.auth import Auth
 
-class IAuthService(ABC):
+class IAuthServiceImpl(ABC):
 
     @abstractmethod
-    async def CreateUser(self, request):
+    def __init__(self):
         pass
 
     @abstractmethod
-    async def RegistrationUser(self, request):
+    async def CreateUser(self, request)->auth_pb2.OkeyResponse:
         pass
 
     @abstractmethod
-    async def RefreshToken(self, request):
+    async def RegistrationUser(self, request)->auth_pb2.CookieResponse:
         pass
 
     @abstractmethod
-    async def Authenticate(self, request):
+    async def RefreshToken(self, request)->auth_pb2.AccessTokenResponse:
         pass
 
     @abstractmethod
-    async def CurrentUser(self, request):
+    async def Authenticate(self, request)->auth_pb2.CookieResponse:
+        pass
+
+    @abstractmethod
+    async def CurrentUser(self, request)->auth_pb2.CurrentUserResponse:
         pass
