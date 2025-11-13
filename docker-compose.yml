@@ -13,5 +13,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth_service
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      GRPC_PORT: 50051
+    ports:
+      - "50051:50051"
+    command: ["poetry", "run", "python", "main.py"]
+    volumes:
+      - ./:/app
+    working_dir: /app
+
 volumes:
   postgres_data:

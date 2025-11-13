@@ -24,8 +24,8 @@ def check_emil_token(
             status_code = 400,
             error="Token Email"
         )
+    )
     return None
-)
 
 def check_username_token(
     token_email
@@ -38,5 +38,5 @@ def check_username_token(
             status_code = 400,
             error="Token Username"
         )
+    )
     return None
-)

@@ -1,23 +1,9 @@
 from datetime import UTC, datetime, timedelta
-from typing import Annotated
 
 import jwt
-from jwt.exceptions import InvalidTokenError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.security.checks import (
-    check_access_token,
-    check_valid_refresh_token,
-    check_user,
-)
-from app.core.security.password import (
-    get_password_hash,
-    verify_password,
-)
-from app.core.db.repositories.auth_repositories import SQLAlchemyAuthRepository
 
-from proto import auth_pb2
 
 # async def build_auth_response(request) -> auth_pb2.CookieResponse:
 #     access_token = create_access_token(data={"sub": request.username})

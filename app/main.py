@@ -1,4 +1,0 @@
-# AIOPIKA
-# PostgreSQL
-# DOCKER
-# AND ENV
