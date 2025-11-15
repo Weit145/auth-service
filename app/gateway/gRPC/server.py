@@ -1,7 +1,7 @@
 import grpc
 from proto import auth_pb2, auth_pb2_grpc
 
-from app.auth.gRPC.auth_server import AuthServicer
+from app.gateway.gRPC.auth_server import AuthServicer
 
 async def serve():
     server = grpc.aio.server()

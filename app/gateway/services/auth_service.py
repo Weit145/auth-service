@@ -11,13 +11,13 @@ from app.core.security.password import (
     verify_password,
 )
 from app.core.db.repositories.auth_repositories import SQLAlchemyAuthRepository
-from app.auth.services.iauth_service import IAuthServiceImpl
-from app.auth.utils.cheks import (
+from app.gateway.services.iauth_service import IAuthServiceImpl
+from app.gateway.utils.cheks import (
     check_reg,
     check_emil_token,
     check_username_token,
 )
-from app.auth.utils.convert import (
+from app.gateway.utils.convert import (
     convert_create_user,
     
 )

@@ -20,5 +20,7 @@ RUN poetry config virtualenvs.create false \
 # Копируем весь код
 COPY . .
 
+ENV PYTHONPATH="${PYTHONPATH}:/app/proto"
+
 # Запуск gRPC сервера
-CMD ["poetry", "run", "python", "main.py"]
+CMD ["poetry", "run", "python", "app/main.py"]

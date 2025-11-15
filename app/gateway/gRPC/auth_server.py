@@ -1,6 +1,6 @@
 from proto import auth_pb2_grpc
 
-from app.auth.services.auth_service import AuthServiceImpl
+from app.gateway.services.auth_service import AuthServiceImpl
 
 
 class AuthServicer(auth_pb2_grpc.AuthServicer):
