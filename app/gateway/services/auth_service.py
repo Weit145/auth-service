@@ -3,8 +3,9 @@ from proto import auth_pb2
 from app.core.security.token import (
     decode_jwt_email,
     decode_jwt_username,
-    create_access_token,
+    create_access_token_user,
     create_refresh_token,
+    create_access_token_email,
 )
 from app.core.security.password import (
     get_password_hash,
@@ -42,7 +43,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         hashed_password = get_password_hash(request.password)
         user = convert_create_user(request, hashed_password)
         result = await self.repo.create_auth_user(user)
-        access_token = create_access_token({"sub": request.email})
+        access_token = create_access_token_email({"sub": request.email})
         print(access_token, flush=True)
         return convert_okey_db(result)
 
@@ -60,7 +61,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         if response is not None:
             return convert_cookie_response(response=response)
         
-        access_token = create_access_token({"sub": user.username})
+        access_token = create_access_token_user({"sub": user.username})
         refresh_token = create_refresh_token({"sub": user.username})
         hash_jwt = get_password_hash(refresh_token)
 
@@ -86,7 +87,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         if response is not None:
             return convert_access_token_response(response=response)
         
-        access_token = create_access_token({"sub": username})
+        access_token = create_access_token_user({"sub": username})
         return convert_access_token_response(access_token=access_token)
 
 
@@ -102,7 +103,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         if response is not None:
             return convert_cookie_response(response=response)
         
-        access_token = create_access_token({"sub": user.username})
+        access_token = create_access_token_user({"sub": user.username})
         refresh_token = create_refresh_token({"sub": user.username})
 
         hash_jwt = get_password_hash(refresh_token)

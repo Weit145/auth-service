@@ -13,10 +13,8 @@ class Setting(BaseSettings):
     db_echo: bool = False
 
     secret_key: str = os.getenv("SECRET_KEY", "default-secret-key")
-    access_token_expire_minutes: int = int(
-        os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
-    )
-    access_token_email_minutes: str = os.getenv("ACCESS_TOKEN_EMAIL_MINUTES", "default_email")
+    access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+    access_token_email_minutes: int  = int(os.getenv("ACCESS_TOKEN_EMAIL_MINUTES", "30"))
     access_token_refresh_day: int = int(os.getenv("ACCESS_TOKEN_REFRESH_DAY", "30"))
     algorithm: str = os.getenv("ALGORITHM", "default_alorithm")
     pwd_context: ClassVar[CryptContext] = CryptContext(
