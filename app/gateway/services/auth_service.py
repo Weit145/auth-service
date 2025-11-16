@@ -16,155 +16,101 @@ from app.gateway.utils.cheks import (
     check_reg,
     check_emil_token,
     check_username_token,
+    check_in_db,
+    check_verify_password,
+    check_verified_and_in_db,
 )
 from app.gateway.utils.convert import (
     convert_create_user,
-    
+    convert_cookie_response,
+    convert_okey_db,
+    convert_access_token_response,
+    convert_current_user_response,
 )
 
 class AuthServiceImpl(IAuthServiceImpl):
     def __init__(self):
         self.repo = SQLAlchemyAuthRepository()
-    
-    async def CreateUser(self, request)->auth_pb2.OkeyResponse:
+
+
+
+    async def CreateUser(self, request)->auth_pb2.Okey:
         response = await check_reg(request)
         if response is not None:
             return response
+        
         hashed_password = get_password_hash(request.password)
         user = convert_create_user(request, hashed_password)
-        await self.repo.create_auth_user(user)
-        return auth_pb2.OkeyResponse(success=True,status_code = 0, error="")
+        result = await self.repo.create_auth_user(user)
+        return convert_okey_db(result)
+
+
 
     async def RegistrationUser(self, request)->auth_pb2.CookieResponse:
+
         email = decode_jwt_email(request.token_pod)
         response = check_emil_token(email)
         if response is not None:
-            return response
+            return convert_cookie_response(response=response)
+        
         user = await self.repo.get_user_by_email(email)
-        if user is None:
-            return auth_pb2.CookieResponse(
-                access_token="",
-                cookie=auth_pb2.Cookie(),
-                response=auth_pb2.Okey(success=False, status_code=404, error="User not found")
-            )
+        response = check_in_db(user)
+        if response is not None:
+            return convert_cookie_response(response=response)
+        
         access_token = create_access_token({"sub": user.username})
         refresh_token = create_refresh_token({"sub": user.username})
-        await self.repo.activate_auth_user(user)
         hash_jwt = get_password_hash(refresh_token)
-        await self.repo.add_refresh_token(user,hash_jwt)
-        return auth_pb2.CookieResponse(
-            access_token=access_token,               
-            cookie=auth_pb2.Cookie(
-                key = "refresh_token",
-                value = refresh_token,
-                httponly = False,
-                secure = True,
-                samesite = "strict",
-                max_age = 7*24*3600,
-            ),       
-            response=auth_pb2.Okey(
-                success=True,
-                status_code = 0,
-                error=""
-            )
-        )
+
+        result = await self.repo.activate_user_with_refresh(user,hash_jwt)
+        response = convert_okey_db(result)
+        return convert_cookie_response(access_token=access_token, refresh_token=refresh_token,response=response)
+
+
+
     async def RefreshToken(self, request)->auth_pb2.AccessTokenResponse:
         username = decode_jwt_username(request.refresh_token)
         response = check_username_token(username)
         if response is not None:
-            return response
+            return convert_access_token_response(response=response)
+        
         user = await self.repo.get_user_by_username(username)
-        if user is None:
-            return auth_pb2.AccessTokenResponse(
-            access_token="",                   
-            response=auth_pb2.Okey(
-                success=False,
-                status_code = 404,
-                error="User not found"
-                )
-            )
+        response = check_in_db(user)
+        if response is None:
+            return convert_access_token_response(response=response)
+        
         result = verify_password(request.refresh_token,user.refresh_token_hash)
-        if not result:
-            return auth_pb2.AccessTokenResponse(
-            access_token="",                   
-            response=auth_pb2.Okey(
-                success=False,
-                status_code = 400,
-                error="Refresh token"
-                )
-            )
+        response = check_verify_password(result)
+        if response is not None:
+            return convert_access_token_response(response=response)
+        
         access_token = create_access_token({"sub": user.username})
-        return auth_pb2.AccessTokenResponse(
-            access_token=access_token,                   
-            response=auth_pb2.Okey(
-                success=True,
-                status_code = 0,
-                error=""
-                )
-            )
+        return convert_access_token_response(access_token=access_token)
+
+
 
     async def Authenticate(self, request)->auth_pb2.CookieResponse:
         user = await self.repo.get_user_by_username(request.username)
-        if user is None:
-            return auth_pb2.CookieResponse(
-                access_token="",
-                cookie=auth_pb2.Cookie(),
-                response=auth_pb2.Okey(success=False, status_code=404, error="User not found")
-            )
+        response = check_in_db(user)
+        if response is not None:
+            return convert_cookie_response(response=response)
+        
         result = verify_password(request.password,user.password_hash)
-        if not result:
-            return auth_pb2.CookieResponse(
-                access_token="",
-                cookie=auth_pb2.Cookie(),
-                response=auth_pb2.Okey(success=False, status_code=400, error="Password")
-            )
+        response = check_verify_password(result)
+        if response is not None:
+            return convert_cookie_response(response=response)
+        
         access_token = create_access_token({"sub": user.username})
         refresh_token = create_refresh_token({"sub": user.username})
-        await self.repo.activate_auth_user(user)
+
         hash_jwt = get_password_hash(refresh_token)
-        await self.repo.add_refresh_token(user,hash_jwt)
-        return auth_pb2.CookieResponse(
-            access_token=access_token,               
-            cookie=auth_pb2.Cookie(
-                key = "refresh_token",
-                value = refresh_token,
-                httponly = False,
-                secure = True,
-                samesite = "strict",
-                max_age = 7*24*3600,
-            ),       
-            response=auth_pb2.Okey(
-                success=True,
-                status_code = 0,
-                error=""
-            )
-        )
-    
+        result = await self.repo.add_refresh_token(user,hash_jwt)
+        response = convert_okey_db(result)
+        return convert_cookie_response(access_token=access_token, refresh_token=refresh_token,response=response)
+
+
+
     async def CurrentUser(self, request)->auth_pb2.CurrentUserResponse:
         user = await self.repo.get_user_by_username(request.username)
-        if user is None:
-            return auth_pb2.CurrentUserResponse(
-                id = 0,
-                username ="",
-                is_active = False,
-                is_verified = False,
-                role ="",
-                response=auth_pb2.Okey(success=False, status_code=404, error="User not found")
-            )
-        if user.is_verified ==False:
-            return auth_pb2.CurrentUserResponse(
-                id = 0,
-                username ="",
-                is_active = False,
-                is_verified = False,
-                role ="",
-                response=auth_pb2.Okey(success=False, status_code=400, error="User not comfirm")
-            )
-        return auth_pb2.CurrentUserResponse(
-                id = user.id,
-                username = user.username,
-                is_active = user.is_active,
-                is_verified = user.is_verified,
-                role = user.role,
-                response=auth_pb2.Okey(success=True, status_code=0, error="")
-            )
+        response = check_verified_and_in_db(user)
+        return convert_current_user_response(user,response)

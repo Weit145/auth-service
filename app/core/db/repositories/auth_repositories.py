@@ -8,19 +8,32 @@ from .iauth_repositories import IAuthRepository
 
 class SQLAlchemyAuthRepository(IAuthRepository):
 
-    async def create_auth_user(self, user: Auth) -> None:
-        async with db_helper.transaction() as session:
-            session.add(user)
+    async def create_auth_user(self, user: Auth) -> str:
+        try:
+            async with db_helper.transaction() as session:
+                session.add(user)
+                return ""
+        except Exception as e:
+            return str(e)
 
-    async def activate_auth_user(self, user: Auth) -> None:
+    async def activate_user_with_refresh(self, user: Auth,refresh_token: str) -> str:
         user.is_active = True
-        async with db_helper.transaction() as session:
-            session.add(user)
-
-    async def add_refresh_token(self, user: Auth, refresh_token: str) -> None:
         user.refresh_token_hash = refresh_token
-        async with db_helper.transaction() as session:
-            session.add(user)
+        try:
+            async with db_helper.transaction() as session:
+                session.add(user)
+                return ""
+        except Exception as e:
+            return str(e)
+
+    async def add_refresh_token(self, user: Auth, refresh_token: str) -> str:
+        user.refresh_token_hash = refresh_token
+        try:
+            async with db_helper.transaction() as session:
+                session.add(user)
+                return ""
+        except Exception as e:
+            return str(e)
 
     async def get_user_by_username(self, username: str) -> Auth | None:
         async with db_helper.transaction() as session:

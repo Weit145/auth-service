@@ -5,15 +5,15 @@ from ..models.auth import Auth
 class IAuthRepository(ABC):
 
     @abstractmethod
-    async def create_auth_user(self, user: Auth) -> None:
+    async def create_auth_user(self, user: Auth) -> str:
         pass
 
     @abstractmethod
-    async def activate_auth_user(self, user: Auth) -> None:
+    async def activate_user_with_refresh(self, user: Auth,refresh_token:str) -> str:
         pass
     
     @abstractmethod
-    async def add_refresh_token(self,user:Auth,refresh_token:str)->None:
+    async def add_refresh_token(self,user:Auth,refresh_token:str)->str:
         pass
     
     @abstractmethod

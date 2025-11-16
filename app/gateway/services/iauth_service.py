@@ -11,7 +11,7 @@ class IAuthServiceImpl(ABC):
         pass
 
     @abstractmethod
-    async def CreateUser(self, request)->auth_pb2.OkeyResponse:
+    async def CreateUser(self, request)->auth_pb2.Okey:
         pass
 
     @abstractmethod
