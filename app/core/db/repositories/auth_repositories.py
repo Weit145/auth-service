@@ -17,7 +17,7 @@ class SQLAlchemyAuthRepository(IAuthRepository):
             return str(e)
 
     async def activate_user_with_refresh(self, user: Auth,refresh_token: str) -> str:
-        user.is_active = True
+        user.is_verified = True
         user.refresh_token_hash = refresh_token
         try:
             async with db_helper.transaction() as session:

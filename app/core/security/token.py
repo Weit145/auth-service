@@ -5,20 +5,6 @@ import jwt
 from app.core.config import settings
 
 
-# async def build_auth_response(request) -> auth_pb2.CookieResponse:
-#     access_token = create_access_token(data={"sub": request.username})
-#     cookie = await create_refresh_token(data={"sub": request.username}, user_db=user_db)
-#     response = JSONResponse(content={"access_token": access_token})
-#     response.set_cookie(
-#         key=cookie.key,
-#         value=cookie.value,
-#         httponly=cookie.httponly,
-#         secure=cookie.secure,
-#         samesite=cookie.samesite,
-#         max_age=cookie.max_age,
-#     )
-#     return response
-
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(UTC) + timedelta(minutes=settings.access_token_expire_minutes)
@@ -28,7 +14,7 @@ def create_access_token(data: dict) -> str:
     )
     return encoded_jwt
 
-async def create_refresh_token(data:dict) -> str:
+def create_refresh_token(data:dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(UTC) + timedelta(days=settings.access_token_refresh_day)
     to_encode.update({"exp": expire})
@@ -36,16 +22,6 @@ async def create_refresh_token(data:dict) -> str:
         to_encode, settings.secret_key, algorithm=settings.algorithm
     )
     return encoded_jwt
-
-
-# async def valid_refresh_token(session: AsyncSession,refresh_token:str):
-#     username = await decode_jwt_username(refresh_token)
-#     usr_db = await SQLAlchemyUserRepository(session).get_user_by_username(username)
-#     check_user(usr_db)
-#     result = verify_password(refresh_token,usr_db.refresh_token)
-#     check_valid_refresh_token(result)
-#     return username
-
 
 
 def decode_jwt_username(

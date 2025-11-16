@@ -2,6 +2,12 @@ from proto import auth_pb2
 
 from app.core.db.models.auth import Auth
 
+default = auth_pb2.Okey(
+    success=True,
+    status_code=200,
+    error="",
+    )
+
 def convert_create_user(request,hashed_password)->Auth:
     return Auth(
         username = request.username,
@@ -12,7 +18,7 @@ def convert_create_user(request,hashed_password)->Auth:
 def convert_cookie_response(
     access_token:str = "",
     refresh_token:str = "",
-    response: auth_pb2.Okey = auth_pb2.Okey(),
+    response: auth_pb2.Okey = default,
 )->auth_pb2.CookieResponse:
     
     cookie=auth_pb2.Cookie(
@@ -32,7 +38,7 @@ def convert_cookie_response(
 
 def convert_access_token_response(
     access_token:str = "",
-    response: auth_pb2.Okey = auth_pb2.Okey(),
+    response: auth_pb2.Okey = default,
 )->auth_pb2.AccessTokenResponse:
     return auth_pb2.AccessTokenResponse(
             access_token=access_token,                   
@@ -41,7 +47,7 @@ def convert_access_token_response(
 
 def convert_current_user_response(
     user:Auth|None = None,
-    response: auth_pb2.Okey = auth_pb2.Okey(),
+    response: auth_pb2.Okey = default,
 )->auth_pb2.CurrentUserResponse:
     if response is not None:
         return auth_pb2.CurrentUserResponse(
@@ -58,7 +64,7 @@ def convert_current_user_response(
             is_active = user.is_active,
             is_verified = user.is_verified,
             role = user.role,
-            response=auth_pb2.Okey(success=True, status_code=0, error="")
+            response=default
         )
 
 def convert_okey_db(
@@ -67,11 +73,7 @@ def convert_okey_db(
     if result=="":
         return auth_pb2.Okey(
         success=True,
-        status_code=0,
+        status_code=200,
         error=result,
         )
-    return auth_pb2.Okey(
-        success=False,
-        status_code=400,
-        error=result,
-    )
+    return default

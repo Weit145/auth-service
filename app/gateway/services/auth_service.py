@@ -42,6 +42,8 @@ class AuthServiceImpl(IAuthServiceImpl):
         hashed_password = get_password_hash(request.password)
         user = convert_create_user(request, hashed_password)
         result = await self.repo.create_auth_user(user)
+        access_token = create_access_token({"sub": request.email})
+        print(access_token, flush=True)
         return convert_okey_db(result)
 
 
@@ -76,7 +78,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         
         user = await self.repo.get_user_by_username(username)
         response = check_in_db(user)
-        if response is None:
+        if response is not None:
             return convert_access_token_response(response=response)
         
         result = verify_password(request.refresh_token,user.refresh_token_hash)
@@ -84,7 +86,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         if response is not None:
             return convert_access_token_response(response=response)
         
-        access_token = create_access_token({"sub": user.username})
+        access_token = create_access_token({"sub": username})
         return convert_access_token_response(access_token=access_token)
 
 
