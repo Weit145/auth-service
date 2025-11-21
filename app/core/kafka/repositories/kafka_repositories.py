@@ -10,6 +10,7 @@ class KafkaRepository():
             num_partitions=partitions,
             replication_factor=replication)]
         try:
+            await admin_client.start()
             await admin_client.create_topics(new_topics=topic_list, validate_only=False)
         finally:
             await admin_client.close()

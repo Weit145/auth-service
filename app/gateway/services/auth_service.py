@@ -11,6 +11,7 @@ from app.core.security.password import (
     get_password_hash,
     verify_password,
 )
+from app.core.kafka.repositories.kafka_repositories import  KafkaRepository
 from app.core.db.repositories.auth_repositories import SQLAlchemyAuthRepository
 from app.gateway.services.iauth_service import IAuthServiceImpl
 from app.gateway.utils.cheks import (
@@ -32,6 +33,7 @@ from app.gateway.utils.convert import (
 class AuthServiceImpl(IAuthServiceImpl):
     def __init__(self):
         self.repo = SQLAlchemyAuthRepository()
+        self.kf = KafkaRepository()
 
 
 
@@ -45,6 +47,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         result = await self.repo.create_auth_user(user)
         access_token = create_access_token_email({"sub": request.email})
         print(access_token, flush=True)
+        await self.kf.send_message(topic="auth",message=access_token)
         return convert_okey_db(result)
 
 
