@@ -22,5 +22,5 @@ COPY . .
 
 ENV PYTHONPATH="${PYTHONPATH}:/app/proto"
 
-# Запуск gRPC сервера
+
 CMD ["poetry", "run", "python", "app/main.py"]

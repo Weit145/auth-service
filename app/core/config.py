@@ -21,7 +21,6 @@ class Setting(BaseSettings):
         schemes=["argon2"], deprecated="auto"
     )
 
-    broker:str = os.getenv("BROKER","default_broker")
-
+    kafka_url: str = os.getenv("KAFKA_BOOTSTRAP_SERVERS","kafka:9092")
 
 settings = Setting()
