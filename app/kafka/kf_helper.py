@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from typing import Union, List
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 from aiokafka.admin import NewTopic, AIOKafkaAdminClient
@@ -31,5 +32,32 @@ class KafkaHelper:
             bootstrap_servers=self.bootstrap_servers,
         )
     
+
+    @asynccontextmanager
+    async def transaction_produсer(self):
+        producer = self.get_producer()
+        await producer.start()
+        try:
+            yield producer
+        finally:
+            await producer.stop()
+
+    @asynccontextmanager
+    async def transaction_consumer(self,topics: Union[str, List[str]], group_id: str):
+        consumer = self.get_consumer(topics,group_id)
+        await consumer.start()
+        try:
+            yield consumer
+        finally:
+            await consumer.stop()
+
+    @asynccontextmanager
+    async def transaction_admin(self):
+        admin = self.get_admin()
+        await admin.start()
+        try:
+            yield admin
+        finally:
+            await admin.close()
 
 kf_helper = KafkaHelper(url=settings.kafka_url)

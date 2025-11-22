@@ -28,7 +28,7 @@ class DatabaseHellper:
         return session
     
     @asynccontextmanager
-    async def transaction(self) -> AsyncSession:
+    async def transaction(self):
         session_factory = self.get_scoped_session()
         session = session_factory()
         try:

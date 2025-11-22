@@ -2,8 +2,6 @@ from abc import ABC, abstractmethod
 from proto import auth_pb2
 
 
-from app.core.db.models.auth import Auth
-
 class IAuthServiceImpl(ABC):
 
     @abstractmethod
