@@ -1,3 +1,4 @@
+from typing import Union, List
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 from aiokafka.admin import NewTopic, AIOKafkaAdminClient
 from app.core.config import settings
@@ -14,13 +15,16 @@ class KafkaHelper:
             enable_idempotence=self.enable_idempotence,
         )
 
-    def get_consumer(self, topic: str, group_id: str, auto_offset_reset:str = "earliest")->AIOKafkaConsumer:
+    def get_consumer(self, topics: Union[str, List[str]], group_id: str, auto_offset_reset: str = "earliest") -> AIOKafkaConsumer:
+        if isinstance(topics, str):
+            topics = [topics]
         return AIOKafkaConsumer(
-            topic,
+            *topics,
             bootstrap_servers=self.bootstrap_servers,
             group_id=group_id,
             auto_offset_reset=auto_offset_reset
         )
+
     
     def get_admin(self)->AIOKafkaAdminClient:
         return AIOKafkaAdminClient(

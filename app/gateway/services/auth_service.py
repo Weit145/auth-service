@@ -1,3 +1,4 @@
+import token
 from proto import auth_pb2
 
 from app.core.security.token import (
@@ -47,7 +48,17 @@ class AuthServiceImpl(IAuthServiceImpl):
         result = await self.repo.create_auth_user(user)
         access_token = create_access_token_email({"sub": request.email})
         print(access_token, flush=True)
-        await self.kf.send_message(topic="auth",message=access_token)
+
+        await self.kf.create_topic("auth")
+        await self.kf.send_message( 
+            topic="auth",
+            message={
+                "token":access_token,
+                "username":request.username, 
+                "email":request.email
+            }
+        )
+
         return convert_okey_db(result)
 
 

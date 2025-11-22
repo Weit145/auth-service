@@ -5,7 +5,7 @@ from app.gateway.gRPC.server import serve
 
 async def main():
     kf = KafkaRepository()
-    await kf.create_topic(name_topic="auth")
+    # await kf.create_topic(name_topic="auth")
     await serve()
 
 if __name__ == "__main__":

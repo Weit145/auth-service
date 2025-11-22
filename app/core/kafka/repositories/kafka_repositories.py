@@ -1,5 +1,7 @@
+import json
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 from aiokafka.admin import NewTopic, AIOKafkaAdminClient
+
 from app.core.kafka.kf_helper import kf_helper
 
 class KafkaRepository():
@@ -16,12 +18,12 @@ class KafkaRepository():
             await admin_client.close()
 
 
-    async def send_message(self,topic:str, message:str):
+    async def send_message(self,topic:str, message:dict):
         producer = kf_helper.get_producer()
         await producer.start()
         try:
-            await  producer.send_and_wait(topic,message.encode('utf-8'))
-        except:
+            await  producer.send_and_wait(topic,json.dumps(message).encode('utf-8'))
+        finally:
             await producer.stop()
 
     async def get_message(self,topic:str, group_id:str):
@@ -29,6 +31,6 @@ class KafkaRepository():
         await consumer.start()
         try:
             async for msg in consumer:
-                return msg.value.decode() 
+                data = json.loads(msg.value.decode("utf-8"))
         finally:
             await consumer.stop()
