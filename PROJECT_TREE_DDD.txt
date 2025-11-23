@@ -1,0 +1,94 @@
+auth-service/
+├── app/
+│   ├── domain/
+│   │   ├── __init__.py
+│   │   ├── entities/
+│   │   │   ├── __init__.py
+│   │   │   └── user.py
+│   │   ├── value_objects/
+│   │   │   ├── __init__.py
+│   │   │   ├── email.py
+│   │   │   ├── password.py
+│   │   │   └── token.py
+│   │   ├── events/
+│   │   │   ├── __init__.py
+│   │   │   └── user_events.py
+│   │   ├── repositories/
+│   │   │   ├── __init__.py
+│   │   │   └── iuser_repository.py
+│   │   └── exceptions.py
+│   │
+│   ├── application/
+│   │   ├── __init__.py
+│   │   ├── dtos/
+│   │   │   ├── __init__.py
+│   │   │   ├── inputs.py
+│   │   │   └── outputs.py
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── create_user_service.py
+│   │   │   ├── authenticate_user_service.py
+│   │   │   ├── register_user_service.py
+│   │   │   ├── refresh_token_service.py
+│   │   │   ├── get_current_user_service.py
+│   │   │   └── event_bus.py
+│   │   └── event_handlers/
+│   │       ├── __init__.py
+│   │       ├── user_event_handler.py
+│   │       └── kafka_event_publisher.py
+│   │
+│   ├── infrastructure/
+│   │   ├── __init__.py
+│   │   ├── persistence/
+│   │   │   ├── __init__.py
+│   │   │   ├── sqlalchemy_user_repository.py
+│   │   │   └── user_orm_model.py
+│   │   ├── security/
+│   │   │   ├── __init__.py
+│   │   │   ├── password_service.py
+│   │   │   └── token_service.py
+│   │   ├── event_bus/
+│   │   │   ├── __init__.py
+│   │   │   └── kafka_event_bus.py
+│   │   ├── kafka_helper.py
+│   │   └── db_helper.py
+│   │
+│   ├── presentation/
+│   │   ├── __init__.py
+│   │   ├── grpc/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_grpc_service.py
+│   │   │   └── server.py
+│   │   ├── mappers/
+│   │   │   ├── __init__.py
+│   │   │   └── proto_mapper.py
+│   │   └── container.py
+│   │
+│   ├── core/
+│   │   └── config.py
+│   │
+│   └── main.py
+│
+├── proto/
+│   ├── __init__.py
+│   ├── auth.proto
+│   ├── auth_pb2.py
+│   └── auth_pb2_grpc.py
+│
+├── migrations/
+│   ├── env.py
+│   ├── script.py.mako
+│   ├── alembic.ini
+│   └── versions/
+│
+├── tests/
+│   ├── __init__.py
+│   ├── domain/
+│   ├── application/
+│   ├── infrastructure/
+│   └── presentation/
+│
+├── Dockerfile
+├── docker-compose.yml
+├── pyproject.toml
+└── alembic.ini

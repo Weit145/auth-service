@@ -1,0 +1,55 @@
+auth-service/
+├── app/
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── db/
+│   │   │   ├── db_hellper.py
+│   │   │   ├── models/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── auth.py
+│   │   │   │   └── base.py
+│   │   │   └── repositories/
+│   │   │       ├── auth_repositories.py
+│   │   │       └── iauth_repositories.py
+│   │   └── security/
+│   │       ├── password.py
+│   │       └── token.py
+│   │
+│   ├── gateway/
+│   │   ├── gRPC/
+│   │   │   ├── auth_server.py
+│   │   │   └── server.py
+│   │   ├── services/
+│   │   │   ├── auth_service.py
+│   │   │   └── iauth_service.py
+│   │   └── utils/
+│   │       ├── cheks.py
+│   │       └── convert.py
+│   │
+│   ├── kafka/
+│   │   ├── kf_helper.py
+│   │   ├── repositories/
+│   │   │   └── kafka_repositories.py
+│   │   └── services/
+│   │       └── kafka_service.py
+│   │
+│   └── main.py
+│
+├── proto/
+│   ├── __init__.py
+│   ├── auth.proto
+│   ├── auth_pb2.py
+│   └── auth_pb2_grpc.py
+│
+├── migrations/
+│   ├── env.py
+│   ├── script.py.mako
+│   ├── alembic.ini
+│   └── versions/
+│       ├── 2025_11_12_1414-85f59ce17020_initial_migration.py
+│       └── 2025_11_12_1415-2ca723ecc8c0_user_id.py
+│
+├── Dockerfile
+├── docker-compose.yml
+├── pyproject.toml
+└── alembic.ini
