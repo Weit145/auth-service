@@ -28,7 +28,7 @@ class SQLAlchemyAuthRepository(IUserRepository):
     async def get_by_username(self, username: Username) -> User | None:
         try:
             async with db_helper.transaction() as session:
-                result = await session.execute(select(UserORM).where(UserORM.username==username))
+                result = await session.execute(select(UserORM).where(UserORM.username==username.value))
                 return convert_orm_to_user(result.scalar_one_or_none())
         except Exception as e:
             raise e
@@ -36,7 +36,7 @@ class SQLAlchemyAuthRepository(IUserRepository):
     async def get_by_email(self, email: Email) -> User | None:
         try:
             async with db_helper.transaction() as session:
-                result = await session.execute(select(UserORM).where(UserORM.email==email))
+                result = await session.execute(select(UserORM).where(UserORM.email==email.value))
                 return convert_orm_to_user(result.scalar_one_or_none())
         except Exception as e:
             raise e

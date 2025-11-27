@@ -1,16 +1,15 @@
 from dataclasses import dataclass
+from email import message
 
 
 @dataclass
 class UserCreatedEvent:
-    username: str
-    email: str
-    token_pod:str
+    topic:str
+    message:dict 
 
 @dataclass
 class UserRegistredEvent:
-    id:int 
-
+    message:dict
 @dataclass
 class UserRefreshedEvent:
     pass

@@ -19,10 +19,13 @@ class KafkaRepository():
         async with kf_helper.transaction_produсer() as producer:
             await  producer.send_and_wait(topic,json.dumps(message).encode('utf-8'))
 
-    async def get_message(self,topic:Union[str, List[str]], group_id:str):
-        async with kf_helper.transaction_consumer(topics=topic,group_id=group_id) as consumer:
+    async def get_message(self, topic: Union[str, List[str]], group_id: str):
+        messages = []
+        async with kf_helper.transaction_consumer(topics=topic, group_id=group_id) as consumer:
             async for msg in consumer:
                 data = json.loads(msg.value.decode("utf-8"))
+                messages.append(data)
+        return messages
                 
     
     async def wait_kafka(self, retries=10000, delay=20):
