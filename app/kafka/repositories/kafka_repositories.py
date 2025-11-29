@@ -29,7 +29,7 @@ class KafkaRepository():
     async def wait_kafka(self, retries=10000, delay=20):
         for i in range(retries):
             try:
-                    await self.create_topic(name_topic="user.created")
+                    await self.create_topic(name_topic="auth")
                     await self.create_topic(name_topic="registration")
                     return
             except Exception as e:

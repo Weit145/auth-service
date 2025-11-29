@@ -35,9 +35,9 @@ class SQLAlchemyAuthRepository(IAuthRepository):
         except Exception as e:
             return str(e)
 
-    async def get_user_by_login(self, username: str) -> Auth | None:
+    async def get_user_by_login(self, login: str) -> Auth | None:
         async with db_helper.transaction() as session:
-            result = await session.execute(select(Auth).where(Auth.username==username))
+            result = await session.execute(select(Auth).where(Auth.login==login))
             return result.scalar_one_or_none()
 
     async def get_user_by_email(self, email: str) -> Auth | None:
