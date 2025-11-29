@@ -21,7 +21,7 @@ class RefreshTokenService:
     event_bus: IEventBus
 
     async def execute(self, dto:RefreshTokenInput)->TokenOutput:
-        username  = self.token_service.decode_jwt_username(dto.refresh_token)
+        username  = self.token_service.decode_jwt_login(dto.refresh_token)
         if username is None:
             raise Exception("Invalid token")
 

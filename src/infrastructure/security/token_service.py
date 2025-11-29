@@ -37,7 +37,7 @@ class TokenService:
         return encoded_jwt
 
     @staticmethod
-    def decode_jwt_username(
+    def decode_jwt_login(
         token: str,
     )->str|None:
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])

@@ -10,7 +10,7 @@ default = auth_pb2.Okey(
 
 def convert_create_user(request,hashed_password)->Auth:
     return Auth(
-        username = request.username,
+        login = request.login,
         email = request.email,
         password_hash = hashed_password
     )
@@ -52,7 +52,7 @@ def convert_current_user_response(
     if response is not None:
         return auth_pb2.CurrentUserResponse(
             id = 0,
-            username ="",
+            login ="",
             is_active = 0,
             is_verified = 0,
             role ="",
@@ -60,7 +60,7 @@ def convert_current_user_response(
         )
     return auth_pb2.CurrentUserResponse(
             id = user.id,
-            username = user.username,
+            login = user.login,
             is_active = user.is_active,
             is_verified = user.is_verified,
             role = user.role,

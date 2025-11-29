@@ -30,6 +30,7 @@ class KafkaRepository():
         for i in range(retries):
             try:
                     await self.create_topic(name_topic="user.created")
+                    await self.create_topic(name_topic="registration")
                     return
             except Exception as e:
                 print(f"Kafka not ready yet ({i+1}/{retries}): {e}")

@@ -33,7 +33,7 @@ def create_refresh_token(data:dict) -> str:
     return encoded_jwt
 
 
-def decode_jwt_username(
+def decode_jwt_login(
     token: str,
 )->str|None:
     payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
@@ -42,7 +42,9 @@ def decode_jwt_username(
 
 def decode_jwt_email(
     token: str,
-)->str|None:
+)->list[str]|None:
     payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
     email = payload.get("sub")
-    return email
+    username = payload.get("username")
+    response = [email, username]
+    return response

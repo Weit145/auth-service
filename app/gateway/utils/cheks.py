@@ -11,8 +11,8 @@ async def check_reg(
     if user_email is not None:
         return auth_pb2.Okey(success=False,status_code = 400, error="Email alreaddy registreate")
     
-    user_username = await SQLAlchemyAuthRepository().get_user_by_username(request.username)
-    if user_username is not None:
+    user_login = await SQLAlchemyAuthRepository().get_user_by_login(request.login)
+    if user_login is not None:
         return auth_pb2.Okey(success=False,status_code = 400, error="Username alreaddy registreate")
     
     return None
@@ -39,7 +39,7 @@ def check_verified_and_in_db(
     return None
 
 def check_emil_token(
-    token_email:str|None,
+    token_email:list[str]|None,
 )->None|auth_pb2.Okey:
     
     if token_email is None:
@@ -52,7 +52,7 @@ def check_emil_token(
     return None
 
 
-def check_username_token(
+def check_login_token(
     token_email:str|None,
 )->None|auth_pb2.Okey:
     
