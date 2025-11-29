@@ -1,5 +1,5 @@
 from proto import auth_pb2
-
+import grpc
 from app.core.security.token import (
     decode_jwt_email,
     decode_jwt_login,
@@ -38,6 +38,7 @@ class AuthServiceImpl(IAuthServiceImpl):
 
     async def CreateUser(self, request, context)->auth_pb2.Okey:
         await check_reg(request,context)
+        
 
         hashed_password = get_password_hash(request.password)
         user = convert_create_user(request, hashed_password)
@@ -61,10 +62,10 @@ class AuthServiceImpl(IAuthServiceImpl):
     async def RegistrationUser(self, request,context)->auth_pb2.CookieResponse:
 
         decode = decode_jwt_email(request.token_pod)
-        check_emil_token(decode,context)
+        await check_emil_token(decode,context)
         
         user = await self.repo.get_user_by_email(decode[0],context)
-        check_in_db(user,context)
+        await check_in_db(user,context)
         
         access_token = create_access_token_user({"sub": user.login})
         refresh_token = create_refresh_token({"sub": user.login})
@@ -86,14 +87,14 @@ class AuthServiceImpl(IAuthServiceImpl):
 
     async def RefreshToken(self, request, context)->auth_pb2.AccessTokenResponse:
         login = decode_jwt_login(request.refresh_token)
-        check_login_token(login,context)
+        await check_login_token(login,context)
 
         
         user = await self.repo.get_user_by_login(login,context)
-        check_in_db(user,context)
+        await check_in_db(user,context)
         
         result = verify_password(request.refresh_token,user.refresh_token_hash)
-        check_verify_password(result,context)
+        await check_verify_password(result,context)
         
         access_token = create_access_token_user({"sub": login})
         return convert_access_token_response(access_token=access_token)
@@ -102,10 +103,10 @@ class AuthServiceImpl(IAuthServiceImpl):
 
     async def Authenticate(self, request,context)->auth_pb2.CookieResponse:
         user = await self.repo.get_user_by_login(request.login,context)
-        check_in_db(user,context)
+        await check_in_db(user,context)
         
         result = verify_password(request.password,user.password_hash)
-        check_verify_password(result,context)
+        await check_verify_password(result,context)
         
         access_token = create_access_token_user({"sub": user.login})
         refresh_token = create_refresh_token({"sub": user.login})
@@ -118,8 +119,8 @@ class AuthServiceImpl(IAuthServiceImpl):
 
     async def CurrentUser(self, request,context)->auth_pb2.CurrentUserResponse:
         login = decode_jwt_login(request.access_token)
-        check_login_token(login,context)
+        await check_login_token(login,context)
         
         user = await self.repo.get_user_by_login(login,context)
-        check_verified_and_in_db(user,context)
+        await check_verified_and_in_db(user,context)
         return convert_current_user_response(user)

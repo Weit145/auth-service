@@ -14,7 +14,7 @@ class SQLAlchemyAuthRepository(IAuthRepository):
             async with db_helper.transaction() as session:
                 session.add(user)
         except Exception as e:
-            context.abort(grpc.StatusCode.INTERNAL, str(e))
+            await context.abort(grpc.StatusCode.INTERNAL, str(e))
 
     async def activate_user_with_refresh(self, user: Auth,refresh_token: str,context) -> None:
         user.is_verified = True
@@ -23,7 +23,7 @@ class SQLAlchemyAuthRepository(IAuthRepository):
             async with db_helper.transaction() as session:
                 session.add(user)
         except Exception as e:
-            context.abort(grpc.StatusCode.INTERNAL, str(e))
+            await context.abort(grpc.StatusCode.INTERNAL, str(e))
 
     async def add_refresh_token(self, user: Auth, refresh_token: str,context) -> None:
         user.refresh_token_hash = refresh_token
@@ -31,7 +31,7 @@ class SQLAlchemyAuthRepository(IAuthRepository):
             async with db_helper.transaction() as session:
                 session.add(user)
         except Exception as e:
-            context.abort(grpc.StatusCode.INTERNAL, str(e))
+            await context.abort(grpc.StatusCode.INTERNAL, str(e))
 
     async def get_user_by_login(self, login: str,context) -> Auth | None:
         async with db_helper.transaction() as session:
