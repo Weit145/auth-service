@@ -4,8 +4,6 @@ from app.core.db.models.auth import Auth
 
 default = auth_pb2.Okey(
     success=True,
-    status_code=200,
-    error="",
     )
 
 def convert_create_user(request,hashed_password)->Auth:
