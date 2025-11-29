@@ -18,7 +18,6 @@ def convert_create_user(request,hashed_password)->Auth:
 def convert_cookie_response(
     access_token:str = "",
     refresh_token:str = "",
-    response: auth_pb2.Okey = default,
 )->auth_pb2.CookieResponse:
     
     cookie=auth_pb2.Cookie(
@@ -33,47 +32,22 @@ def convert_cookie_response(
     return auth_pb2.CookieResponse(
         access_token=access_token,               
         cookie=cookie,       
-        response=response,
     )
 
 def convert_access_token_response(
     access_token:str = "",
-    response: auth_pb2.Okey = default,
 )->auth_pb2.AccessTokenResponse:
     return auth_pb2.AccessTokenResponse(
             access_token=access_token,                   
-            response=response
             )
 
 def convert_current_user_response(
     user:Auth|None = None,
-    response: auth_pb2.Okey = default,
 )->auth_pb2.CurrentUserResponse:
-    if response is not None:
-        return auth_pb2.CurrentUserResponse(
-            id = 0,
-            login ="",
-            is_active = 0,
-            is_verified = 0,
-            role ="",
-            response=response
-        )
     return auth_pb2.CurrentUserResponse(
             id = user.id,
             login = user.login,
             is_active = user.is_active,
             is_verified = user.is_verified,
             role = user.role,
-            response=default
         )
-
-def convert_okey_db(
-    result:str,
-)->auth_pb2.Okey:
-    if result=="":
-        return auth_pb2.Okey(
-        success=True,
-        status_code=200,
-        error=result,
-        )
-    return default
