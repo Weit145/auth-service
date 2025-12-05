@@ -1,12 +1,13 @@
 from sqlalchemy import text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 
-from .base import Base
 
-class Auth(Base):
+class UserORM(DeclarativeBase):
     __tablename__ = "auth"
 
-    login: Mapped[str] = mapped_column(nullable=False, unique=True)  
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    username: Mapped[str] = mapped_column(nullable=False, unique=True)  
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
     password_hash: Mapped[str] = mapped_column(nullable=False)
     refresh_token_hash: Mapped[str] = mapped_column(server_default=text("0"))

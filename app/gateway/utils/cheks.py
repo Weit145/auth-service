@@ -1,3 +1,4 @@
+import grpc
 from proto import auth_pb2
 
 from app.core.db.models.auth import Auth
@@ -5,75 +6,66 @@ from app.core.db.repositories.auth_repositories import SQLAlchemyAuthRepository
 
 async def check_reg(
     request,
-)->None|auth_pb2.Okey:
+    context,
+)->None:
     
-    user_email = await SQLAlchemyAuthRepository().get_user_by_email(request.email)
+    user_email = await SQLAlchemyAuthRepository().get_user_by_email(request.email,context)
     if user_email is not None:
-        return auth_pb2.Okey(success=False,status_code = 400, error="Email alreaddy registreate")
+        await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Email alreaddy registreate")
     
-    user_username = await SQLAlchemyAuthRepository().get_user_by_username(request.username)
-    if user_username is not None:
-        return auth_pb2.Okey(success=False,status_code = 400, error="Username alreaddy registreate")
+    user_login = await SQLAlchemyAuthRepository().get_user_by_login(request.login,context)
+    if user_login is not None:
+        await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Username alreaddy registreate")
     
     return None
 
-def check_in_db(
+async def check_in_db(
     db:Auth|None,
-)->None|auth_pb2.Okey:
+    context,
+)->None:
     
     if db is None:
-        return auth_pb2.Okey(success=False,status_code = 404, error="Not found")
-    
+        await context.abort(grpc.StatusCode.NOT_FOUND, "Not found")
     return None
 
-def check_verified_and_in_db(
+async def check_verified_and_in_db(
     db,
+    context,
 )->None|auth_pb2.Okey:
     
     if db is None:
-        return auth_pb2.Okey(success=False,status_code = 404, error="Not found")
+        await context.abort(grpc.StatusCode.NOT_FOUND, "Not found")
     
     if db.is_verified == False:
-        return auth_pb2.Okey(success=False, status_code=400, error="User not comfirm")
+        await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "User not comfirm")
     
     return None
 
-def check_emil_token(
+async def check_emil_token(
+    token_email:list[str]|None,
+    context,
+)->None:
+    if token_email is None:
+        await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Token Email")
+    return None
+
+
+async def check_login_token(
     token_email:str|None,
-)->None|auth_pb2.Okey:
+    context,
+)->None:
     
     if token_email is None:
-        return auth_pb2.Okey(
-            success=False,
-            status_code = 400,
-            error="Token Email"
-        )
-    
+        await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Token Username")
+
     return None
 
-
-def check_username_token(
-    token_email:str|None,
-)->None|auth_pb2.Okey:
-    
-    if token_email is None:
-        return auth_pb2.Okey(
-            success=False,
-            status_code = 400,
-            error="Token Username"
-        )
-    
-    return None
-
-def check_verify_password(
+async def check_verify_password(
     result:bool,
-)->None|auth_pb2.Okey:
+    context,
+)->None:
     
     if not result:
-        return auth_pb2.Okey(
-                success=False,
-                status_code = 400,
-                error="Password problem"
-            )
+        await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Password problem")
     
     return None
