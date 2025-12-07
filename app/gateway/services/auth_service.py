@@ -124,3 +124,10 @@ class AuthServiceImpl(IAuthServiceImpl):
         user = await self.repo.get_user_by_login(login,context)
         await check_verified_and_in_db(user,context)
         return convert_current_user_response(user)
+    
+    async def DeleteUserFromUserService(self, data:dict) -> None:
+        id = data.get("id")
+        print(f"Deleting auth user with ID: {id}", flush=True)
+        user = await self.repo.get_user_by_id(id)
+        if user is not None:
+            await self.repo.delete_auth_user(user)

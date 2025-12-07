@@ -42,8 +42,13 @@ class SQLAlchemyAuthRepository(IAuthRepository):
         async with db_helper.transaction() as session:
             result = await session.execute(select(Auth).filter(Auth.email == email))
             return result.scalar_one_or_none()
+    
+    async def get_user_by_id(self, id: int) -> Auth | None:
+        async with db_helper.transaction() as session:
+            result = await session.get(Auth,id)
+            return result
 
-    async def delete_auth_user(self, user: Auth,context) -> None:
+    async def delete_auth_user(self, user: Auth) -> None:
         async with db_helper.transaction() as session:
             await session.delete(user)
 

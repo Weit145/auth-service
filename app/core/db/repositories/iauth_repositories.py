@@ -25,7 +25,7 @@ class IAuthRepository(ABC):
         pass
     
     @abstractmethod
-    async def delete_auth_user(self, user: Auth,context) -> None:
+    async def delete_auth_user(self, user: Auth) -> None:
         pass
 
     @abstractmethod

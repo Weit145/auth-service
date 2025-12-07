@@ -1,5 +1,6 @@
 import json
 import asyncio
+from re import A
 from typing import Union, List
 from aiokafka.admin import NewTopic
 
@@ -24,7 +25,8 @@ class KafkaRepository():
         async with kf_helper.transaction_consumer(topics=topic,group_id=group_id) as consumer:
             async for msg in consumer:
                 data = json.loads(msg.value.decode("utf-8"))
-                
+                from app.gateway.services.auth_service import AuthServiceImpl
+                await AuthServiceImpl().DeleteUserFromUserService(data)
     
     async def wait_kafka(self, retries=10000, delay=20):
         for i in range(retries):
