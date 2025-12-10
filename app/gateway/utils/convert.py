@@ -21,9 +21,9 @@ def convert_cookie_response(
     cookie=auth_pb2.Cookie(
                 key = "refresh_token",
                 value = refresh_token,
-                httponly = False,
+                httponly = True,
                 secure = True,
-                samesite = "strict",
+                samesite = "none",
                 max_age = 7*24*3600,
             )
     
