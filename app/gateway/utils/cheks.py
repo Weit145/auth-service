@@ -38,6 +38,9 @@ async def check_verified_and_in_db(
     
     if db.is_verified == False:
         await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "User not comfirm")
+
+    if not db.refresh_token_hash :
+        await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "User logout")
     
     return None
 

@@ -18,3 +18,7 @@ class AuthServicer(auth_pb2_grpc.AuthServicer):
     
     async def CurrentUser(self, request, context):
         return await AuthServiceImpl().CurrentUser(request, context)
+    
+    async def LogOutUser(self,request, context):
+        print("ON grpc auth", flush=True)
+        return await AuthServiceImpl().LogOutUser(request, context)

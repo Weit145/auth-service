@@ -55,3 +55,8 @@ class SQLAlchemyAuthRepository(IAuthRepository):
     async def update_auth_user(self, user: Auth,context) -> None:
         async with db_helper.transaction() as session:
             session.add(user)
+
+    async def delete_refresh(self,user: Auth) ->None:
+        user.refresh_token_hash = ""
+        async with db_helper.transaction() as session:
+            session.add(user)

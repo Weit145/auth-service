@@ -27,3 +27,7 @@ class IAuthServiceImpl(ABC):
     @abstractmethod
     async def CurrentUser(self, request,context)->auth_pb2.CurrentUserResponse:
         pass
+
+    @abstractmethod
+    async def LogOutUser(self, request,context)->auth_pb2.Empty:
+        pass
