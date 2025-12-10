@@ -1,6 +1,5 @@
 import json
 import asyncio
-from re import A
 from typing import Union, List
 from aiokafka.admin import NewTopic
 

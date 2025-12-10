@@ -1,12 +1,16 @@
-from asyncio import current_task
+import asyncio
 from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import (
     async_scoped_session,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.ext.asyncio import AsyncSession
 from ..config import settings
+
+
+from time import sleep
+from alembic.config import Config
+from alembic import command
 
 
 class DatabaseHellper:
@@ -23,7 +27,7 @@ class DatabaseHellper:
     def get_scoped_session(self):
         # Создаем scoped сессию - одна сессия на одну асинхронную задачу
         session = async_scoped_session(
-            session_factory=self.session_factory, scopefunc=current_task
+            session_factory=self.session_factory, scopefunc=asyncio.current_task
         )
         return session
     
@@ -40,6 +44,16 @@ class DatabaseHellper:
         finally:
             await session.close()    
 
+    @staticmethod
+    async def run_migrations():
+        for i in range(50):
+            try:
+                alembic_cfg = Config("alembic.ini")
+                await asyncio.to_thread(command.upgrade, alembic_cfg, "head")
+                return
+            except Exception as e:
+                print(f"Database not ready yet ({i+1}/5): {e}",flush=True)
+                await asyncio.sleep(20)
     # @property
     # @staticmethod
 
