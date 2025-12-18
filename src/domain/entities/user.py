@@ -16,18 +16,18 @@ from src.domain.events.user_events import (
     UserCurrentedEvent,
 )
 
+
 @dataclass
 class User:
+    username: Username
+    email: Email
+    password_hash: PasswordHash
+    refresh_token_hash: Optional[RefreshToken] = None
+    is_active: bool = True
+    is_verified: bool = False
+    role: str = "user"
 
-    username : Username
-    email : Email
-    password_hash : PasswordHash
-    refresh_token_hash : Optional[RefreshToken] = None
-    is_active : bool = True
-    is_verified : bool = False
-    role : str = "user"
-
-    _events : List[object] = field(default_factory=list, repr=False, compare=False)
+    _events: List[object] = field(default_factory=list, repr=False, compare=False)
 
     @classmethod
     def create(
@@ -51,7 +51,7 @@ class User:
         )
         user._add_event(UserCreatedEvent)
         return user
-    
+
     def register(self, new_refresh_token_hash: RefreshToken) -> None:
         self.refresh_token_hash = new_refresh_token_hash
         self.is_verified = True
@@ -67,7 +67,6 @@ class User:
 
     def current_user(self) -> None:
         self._add_event(UserCurrentedEvent)
-
 
     def pull_events(self) -> List[object]:
         events = self._events.copy()

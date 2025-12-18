@@ -7,24 +7,24 @@ from src.domain.value_objects import (
     Username,
 )
 
+
 class IUserRepository(ABC):
-
     @abstractmethod
-    async def add(self,user:User)->User:
+    async def add(self, user: User) -> User:
         pass
 
     @abstractmethod
-    async def get_by_username(self,username:Username)->Optional[User]:
+    async def get_by_username(self, username: Username) -> Optional[User]:
         pass
 
     @abstractmethod
-    async def get_by_email(self,email:Email)->Optional[User]:
+    async def get_by_email(self, email: Email) -> Optional[User]:
         pass
 
     @abstractmethod
-    async def update(self,user:User)->User:
+    async def update(self, user: User) -> User:
         pass
 
     @abstractmethod
-    async def delete(self,user:User)->None:
+    async def delete(self, user: User) -> None:
         pass

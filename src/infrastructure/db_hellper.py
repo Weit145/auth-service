@@ -16,13 +16,13 @@ class DatabaseHellper:
             autoflush=False,
             expire_on_commit=False,
         )
-        
+
     def get_scoped_session(self):
         session = async_scoped_session(
             session_factory=self.session_factory, scopefunc=current_task
         )
         return session
-    
+
     @asynccontextmanager
     async def transaction(self):
         session_factory = self.get_scoped_session()
@@ -34,6 +34,7 @@ class DatabaseHellper:
             await session.rollback()
             raise
         finally:
-            await session.close()    
+            await session.close()
+
 
 db_helper = DatabaseHellper(url=settings.db_url, echo=settings.db_echo)

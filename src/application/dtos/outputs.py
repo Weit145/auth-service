@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from os import access
+
 
 @dataclass
 class Cookie:
@@ -10,14 +10,17 @@ class Cookie:
     samesite: str
     max_age: int
 
+
 @dataclass
 class CookieOutput:
     access_token: str
-    cookie : Cookie
+    cookie: Cookie
+
 
 @dataclass
 class TokenOutput:
     access_token: str
+
 
 @dataclass
 class UserOutput:

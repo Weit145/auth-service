@@ -1,4 +1,4 @@
-__all__ = ['Email', 'PasswordHash', 'RefreshToken','Username']
+__all__ = ["Email", "PasswordHash", "RefreshToken", "Username"]
 
 from .email import Email
 from .password import PasswordHash

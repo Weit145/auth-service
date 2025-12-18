@@ -1,7 +1,7 @@
 from app.core.config import settings
 
+
 class PasswordService:
-    
     @staticmethod
     def get_password_hash(password) -> str:
         return settings.pwd_context.hash(password)

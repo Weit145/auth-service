@@ -14,6 +14,7 @@ def create_access_token_user(data: dict) -> str:
     )
     return encoded_jwt
 
+
 def create_access_token_email(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(UTC) + timedelta(minutes=settings.access_token_email_minutes)
@@ -23,7 +24,8 @@ def create_access_token_email(data: dict) -> str:
     )
     return encoded_jwt
 
-def create_refresh_token(data:dict) -> str:
+
+def create_refresh_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(UTC) + timedelta(days=settings.access_token_refresh_day)
     to_encode.update({"exp": expire})
@@ -35,14 +37,15 @@ def create_refresh_token(data:dict) -> str:
 
 def decode_jwt_login(
     token: str,
-)->str|None:
+) -> str | None:
     payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
     username = payload.get("sub")
     return username
 
+
 def decode_jwt_email(
     token: str,
-)->list[str]|None:
+) -> list[str] | None:
     payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
     email = payload.get("sub")
     username = payload.get("username")
