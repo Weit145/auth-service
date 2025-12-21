@@ -50,7 +50,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         await self.kf.send_message(
             topic="auth",
             message={
-                "id":user_bd.id,
+                "id": user_bd.id,
                 "token": access_token,
                 "username": request.username,
                 "email": request.email,
@@ -138,8 +138,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         if user is not None:
             await self.repo.delete_auth_user(user)
 
-
-    async def DeleteNoVerifiedUser(self, data: dict)->None:
+    async def DeleteNoVerifiedUser(self, data: dict) -> None:
         id = data.get("id")
         user = await self.repo.get_user_by_id(id)
         if not user.is_verified:

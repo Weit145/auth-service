@@ -10,9 +10,11 @@ async def main():
     await kf.wait_kafka()
     migrations_task = asyncio.create_task(db_helper.run_migrations())
     kafka_task = asyncio.create_task(kf.get_message("delete", "auth_service"))
-    kafka_task_check = asyncio.create_task(kf.get_message("check_verified", "auth_service"))
+    kafka_task_check = asyncio.create_task(
+        kf.get_message("check_verified", "auth_service")
+    )
     gateway_task = asyncio.create_task(serve())
-    await asyncio.gather(migrations_task, kafka_task, gateway_task,kafka_task_check)
+    await asyncio.gather(migrations_task, kafka_task, gateway_task, kafka_task_check)
 
 
 if __name__ == "__main__":
