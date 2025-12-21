@@ -31,8 +31,10 @@ class KafkaRepository:
             async for msg in consumer:
                 data = json.loads(msg.value.decode("utf-8"))
                 from app.gateway.services.auth_service import AuthServiceImpl
-
-                await AuthServiceImpl().DeleteUserFromUserService(data)
+                if (topic == "delete"):
+                    await AuthServiceImpl().DeleteUserFromUserService(data)
+                elif (topic == "check_verified"):
+                    await AuthServiceImpl().DeleteNoVerifiedUser(data)
 
     async def wait_kafka(self, retries=10000, delay=20):
         for i in range(retries):

@@ -40,6 +40,8 @@ class AuthServiceImpl(IAuthServiceImpl):
         hashed_password = get_password_hash(request.password)
         user = convert_create_user(request, hashed_password)
         await self.repo.create_auth_user(user, context)
+        user_bd = await self.repo.get_user_by_email(user.email, context)
+        await check_in_db(user, context)
 
         access_token = create_access_token_email(
             {"sub": request.email, "username": request.username}
@@ -48,6 +50,7 @@ class AuthServiceImpl(IAuthServiceImpl):
         await self.kf.send_message(
             topic="auth",
             message={
+                "id":user_bd.id,
                 "token": access_token,
                 "username": request.username,
                 "email": request.email,
@@ -133,4 +136,11 @@ class AuthServiceImpl(IAuthServiceImpl):
         print(f"Deleting auth user with ID: {id}", flush=True)
         user = await self.repo.get_user_by_id(id)
         if user is not None:
+            await self.repo.delete_auth_user(user)
+
+
+    async def DeleteNoVerifiedUser(self, data: dict)->None:
+        id = data.get("id")
+        user = await self.repo.get_user_by_id(id)
+        if not user.is_verified:
             await self.repo.delete_auth_user(user)
