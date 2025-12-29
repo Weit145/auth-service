@@ -52,7 +52,7 @@ class SQLAlchemyAuthRepository(IAuthRepository):
         async with db_helper.transaction() as session:
             await session.delete(user)
 
-    async def update_auth_user(self, user: Auth, context) -> None:
+    async def update_auth_user(self, user: Auth) -> None:
         async with db_helper.transaction() as session:
             session.add(user)
 

@@ -31,5 +31,5 @@ class IAuthRepository(ABC):
         pass
 
     @abstractmethod
-    async def update_auth_user(self, user: Auth, context) -> None:
+    async def update_auth_user(self, user: Auth) -> None:
         pass

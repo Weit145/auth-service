@@ -143,3 +143,14 @@ class AuthServiceImpl(IAuthServiceImpl):
         user = await self.repo.get_user_by_id(id)
         if not user.is_verified:
             await self.repo.delete_auth_user(user)
+
+    async def BanUser(self, data: dict)->None:
+        id = data.get("id")
+        user = await self.repo.get_user_by_id(id)
+        if user:
+            if user.is_active:
+                user.is_active = False
+                await self.repo.update_auth_user(user)
+            elif not user.is_active:
+                user.is_active = True
+                await self.repo.update_auth_user(user)

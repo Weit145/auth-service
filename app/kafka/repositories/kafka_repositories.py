@@ -36,6 +36,11 @@ class KafkaRepository:
                     await AuthServiceImpl().DeleteUserFromUserService(data)
                 elif topic == "check_verified":
                     await AuthServiceImpl().DeleteNoVerifiedUser(data)
+                elif topic == "admin_delete_user":
+                    await AuthServiceImpl().DeleteUserFromUserService(data)
+                elif topic == "admin_ban_user":
+                    await AuthServiceImpl().BanUser(data)
+
 
     async def wait_kafka(self, retries=10000, delay=20):
         for i in range(retries):

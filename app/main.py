@@ -13,8 +13,10 @@ async def main():
     kafka_task_check = asyncio.create_task(
         kf.get_message("check_verified", "auth_service")
     )
+    kafka_task_admin_delete = asyncio.create_task(kf.get_message("admin_delete_user", "auth_service"))
+    kafka_task_admin_ban = asyncio.create_task(kf.get_message("admin_ban_user", "auth_service"))
     gateway_task = asyncio.create_task(serve())
-    await asyncio.gather(migrations_task, kafka_task, gateway_task, kafka_task_check)
+    await asyncio.gather(migrations_task, kafka_task, gateway_task, kafka_task_check,kafka_task_admin_delete,kafka_task_admin_ban)
 
 
 if __name__ == "__main__":
