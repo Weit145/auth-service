@@ -3,7 +3,8 @@
 
 **Auth Service** — микросервис аутентификации и авторизации для платформы форума.
 Он управляет регистрацией пользователей, входом в систему и проверкой прав доступа через JWT. Сервис взаимодействует с другими компонентами платформы через **gRPC** и события **Kafka**, без прямого HTTP-доступа извне.
-Auth Service является частью проекта сайта **[Microservices_Site](https://github.com/Weit145/microservices_site)**.
+
+Auth Service является частью проекта сайта **[Microservices_Site](https://github.com/Weit145/microservices_site)**. 
 
 
 
